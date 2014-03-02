@@ -1,0 +1,4 @@
+colin_frei_podcast_server:
+    resource: "@ColinFreiPodcastServerBundle/Resources/config/routing.xml"
+    prefix:   /
+
