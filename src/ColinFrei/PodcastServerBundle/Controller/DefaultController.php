@@ -2,12 +2,28 @@
 
 namespace ColinFrei\PodcastServerBundle\Controller;
 
+use Buzz\Browser;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
-    public function indexAction($name)
+    /**
+     * For now this just passes the response from the external server on
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function forwardAction(Request $request)
     {
-        return $this->render('ColinFreiPodcastServerBundle:Default:index.html.twig', array('name' => $name));
+        $url = $request->query->get('url');
+
+        /** @var Browser $buzz */
+        $buzz = $this->get('buzz');
+        $response = $buzz->get($url);
+
+        return new Response($response->getContent());
     }
 }
