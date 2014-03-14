@@ -24,6 +24,6 @@ class DefaultController extends Controller
         $buzz = $this->get('buzz');
         $response = $buzz->get($url);
 
-        return new Response($response->getContent());
+        return new Response($response->getContent(), 200, array('Access-Control-Allow-Origin' => 'app://*'));
     }
 }
