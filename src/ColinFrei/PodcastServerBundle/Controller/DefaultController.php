@@ -18,14 +18,21 @@ class DefaultController extends Controller
      */
     public function forwardAction(Request $request)
     {
+        $logger = $this->get('logger');
         $url = $request->query->get('url');
+        $logger->debug('Url requested: ' . $url);
 
         /** @var Browser $buzz */
         $buzz = $this->get('buzz');
         $requestHeaders = array();
         foreach ($request->headers->all() as $header => $content) {
+            if ($header == 'if-modified-since') {
+                continue;
+            }
+
             $requestHeaders[$header] = $content[0];
         }
+        $logger->debug('Request headers sent to remote server', $requestHeaders);
 
         $response = $buzz->get($url, $requestHeaders);
 
@@ -42,6 +49,8 @@ class DefaultController extends Controller
         $headers['Access-Control-Allow-Origin'] = '*';
         $headers['Expires'] = '-1';
         $headers['Cache-Control'] = 'private, max-age=0';
+
+        //TODO: handle caching better
 
         // TODO: could add some more checking by adding an Access-Control-Request-Headers field:
         // https://developer.mozilla.org/en/docs/HTTP/Access_control_CORS#Access-Control-Request-Headers
