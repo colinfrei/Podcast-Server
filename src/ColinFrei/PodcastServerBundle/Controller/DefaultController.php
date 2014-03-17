@@ -22,7 +22,11 @@ class DefaultController extends Controller
 
         /** @var Browser $buzz */
         $buzz = $this->get('buzz');
-        $response = $buzz->get($url, $request->headers->all());
+        $requestHeaders = array();
+        foreach ($request->headers->all() as $header => $content) {
+            $requestHeaders[] = $request->headers->get($header);
+        }
+        $response = $buzz->get($url, $requestHeaders);
 
         $headers = array();
         foreach ($response->getHeaders() as $responseHeader) {
@@ -31,6 +35,8 @@ class DefaultController extends Controller
             $headers[$header] = $value;
         }
         $headers['Access-Control-Allow-Origin'] = '*';
+        $headers['Expires'] = '-1';
+        $headers['Cache-Control'] = 'private, max-age=0';
 
         // TODO: could add some more checking by adding an Access-Control-Request-Headers field:
         // https://developer.mozilla.org/en/docs/HTTP/Access_control_CORS#Access-Control-Request-Headers
