@@ -24,10 +24,17 @@ class DefaultController extends Controller
 
         /** @var Browser $buzz */
         $buzz = $this->get('buzz');
+        $buzz->getClient()->setTimeout(20);
         $requestHeaders = array();
+        $unsetHeaders = array('If-Modified-Since', 'X-Php-Ob-Level', 'Host');
         foreach ($request->headers->all() as $header => $content) {
-            if ($header == 'if-modified-since') {
+            $header = implode('-', array_map('ucfirst', explode('-', $header)));
+            if (in_array($header, $unsetHeaders)) {
                 continue;
+            }
+
+            if ($header == 'Dnt') {
+                $header = 'DNT';
             }
 
             $requestHeaders[$header] = $content[0];
