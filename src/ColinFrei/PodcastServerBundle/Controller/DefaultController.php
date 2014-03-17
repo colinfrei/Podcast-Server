@@ -24,15 +24,20 @@ class DefaultController extends Controller
         $buzz = $this->get('buzz');
         $requestHeaders = array();
         foreach ($request->headers->all() as $header => $content) {
-            $requestHeaders[] = $request->headers->get($header);
+            $requestHeaders[$header] = $content[0];
         }
+
         $response = $buzz->get($url, $requestHeaders);
 
         $headers = array();
         foreach ($response->getHeaders() as $responseHeader) {
-            list($header, $value) = explode(' ', $responseHeader);
+            $header = substr($responseHeader, 0, strpos($responseHeader, ' '));
+            $value = substr($responseHeader, strpos($responseHeader, ' '));
+            if ($header == 'HTTP/1.0') {
+                continue;
+            }
 
-            $headers[$header] = $value;
+            $headers[rtrim($header, ':')] = $value;
         }
         $headers['Access-Control-Allow-Origin'] = '*';
         $headers['Expires'] = '-1';
