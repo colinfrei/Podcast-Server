@@ -47,7 +47,7 @@ class DefaultController extends Controller
         foreach ($response->getHeaders() as $responseHeader) {
             $header = substr($responseHeader, 0, strpos($responseHeader, ' '));
             $value = substr($responseHeader, strpos($responseHeader, ' '));
-            if ($header == 'HTTP/1.0') {
+            if ($header == 'HTTP/1.0' || $header == 'Transfer-Encoding:') {
                 continue;
             }
 
