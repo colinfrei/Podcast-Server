@@ -24,7 +24,7 @@ class DefaultController extends Controller
 
         /** @var Browser $buzz */
         $buzz = $this->get('buzz');
-        $buzz->getClient()->setTimeout(20);
+        $buzz->getClient()->setTimeout(150);
         $requestHeaders = array();
         $unsetHeaders = array('If-Modified-Since', 'X-Php-Ob-Level', 'Host');
         foreach ($request->headers->all() as $header => $content) {
@@ -62,6 +62,6 @@ class DefaultController extends Controller
         // TODO: could add some more checking by adding an Access-Control-Request-Headers field:
         // https://developer.mozilla.org/en/docs/HTTP/Access_control_CORS#Access-Control-Request-Headers
         $logger->debug('Content received from server: ' . $response->getContent());
-        return new Response($response->getContent(), $response->getStatusCode(), $headers);
+        return new Response((string) $response->getContent(), $response->getStatusCode(), $headers);
     }
 }
